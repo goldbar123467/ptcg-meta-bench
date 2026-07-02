@@ -76,12 +76,17 @@ ptcg decks --json
 ptcg doctor --json
 ```
 
-The v1.0.0 command names still work:
+The older command names still work:
 
 ```bash
+ptcg quickstart --sdk-zip data/competition/pokemon-tcg-ai-battle.zip
 ptcg-meta-bench quickstart --sdk-zip data/competition/pokemon-tcg-ai-battle.zip
 python -m ptcg_meta_bench list-decks
 ```
+
+If you do not want to run the one-paste installer, clone the repo, create a
+virtual environment, install with `python -m pip install -e .`, put the Kaggle
+zip at `data/competition/pokemon-tcg-ai-battle.zip`, then run `ptcg doctor`.
 
 ## Troubleshooting
 
@@ -142,6 +147,8 @@ The MCP server exposes `list_decks`, `run_benchmark`, `play_game`, and
 
 The repo does not vendor the Kaggle SDK zip, native engine libraries, card
 images, or private submissions. You provide your own Kaggle competition zip.
+The included `examples/agents/simple_baseline` agent is intentionally minimal;
+it is a runnable contract example, not a tuned leaderboard agent.
 
 The local agent layout is:
 
