@@ -60,6 +60,7 @@ jobs:
           "$HOME/.local/share/ptcg-meta-bench/venv/bin/ptcg" doctor
           "$HOME/.local/share/ptcg-meta-bench/venv/bin/ptcg" demo --games 2
           cd "$HOME/.local/share/ptcg-meta-bench/source"
+          "$HOME/.local/share/ptcg-meta-bench/venv/bin/python" -m pip install -e ".[test]"
           "$HOME/.local/share/ptcg-meta-bench/venv/bin/python" -m pytest -q
           "$HOME/.local/share/ptcg-meta-bench/venv/bin/python" -m ptcg_meta_bench smoke
 
@@ -71,5 +72,6 @@ jobs:
           & (Join-Path $Root "venv\Scripts\ptcg.exe") doctor
           & (Join-Path $Root "venv\Scripts\ptcg.exe") demo --games 2
           Set-Location (Join-Path $Root "source")
+          & (Join-Path $Root "venv\Scripts\python.exe") -m pip install -e ".[test]"
           & (Join-Path $Root "venv\Scripts\python.exe") -m pytest -q
           & (Join-Path $Root "venv\Scripts\python.exe") -m ptcg_meta_bench smoke
