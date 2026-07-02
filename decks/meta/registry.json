@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "registered_at": "2026-07-02",
+  "deck_format": "csv_one_integer_card_id_per_line",
+  "list_command": "python -m ptcg_meta_bench list-decks",
+  "smoke_command": "python -m ptcg_meta_bench smoke --sdk-zip data/competition/pokemon-tcg-ai-battle.zip",
+  "benchmark_command": "python -m ptcg_meta_bench quickstart --sdk-zip data/competition/pokemon-tcg-ai-battle.zip",
+  "baseline_agent": "examples/agents/simple_baseline",
+  "decks": [
+    {
+      "id": "01_archaludon_duraludon",
+      "name": "Archaludon ex / Duraludon",
+      "archetype": "archaludon",
+      "path": "decks/meta/01_archaludon_duraludon.csv"
+    },
+    {
+      "id": "02_petrel_froslass",
+      "name": "Team Rocket's Petrel / Froslass",
+      "archetype": "petrel_froslass",
+      "path": "decks/meta/02_petrel_froslass.csv"
+    },
+    {
+      "id": "03_energy_recycler",
+      "name": "Energy Recycler / Energy Search",
+      "archetype": "energy_recycler_darkness",
+      "path": "decks/meta/03_energy_recycler.csv"
+    },
+    {
+      "id": "04_abra_alakazam",
+      "name": "Abra / Alakazam",
+      "archetype": "alakazam_dunsparce",
+      "path": "decks/meta/04_abra_alakazam.csv"
+    },
+    {
+      "id": "05_yveltal_risky_ruins",
+      "name": "Yveltal / Risky Ruins",
+      "archetype": "yveltal_risky_ruins",
+      "path": "decks/meta/05_yveltal_risky_ruins.csv"
+    },
+    {
+      "id": "06_eri_wondrous_patch",
+      "name": "Eri / Wondrous Patch",
+      "archetype": "eri_wondrous_patch",
+      "path": "decks/meta/06_eri_wondrous_patch.csv"
+    },
+    {
+      "id": "07_mega_kangaskhan_ogerpon",
+      "name": "Mega Kangaskhan ex / Wellspring Mask Ogerpon ex",
+      "archetype": "mega_kangaskhan_ogerpon",
+      "path": "decks/meta/07_mega_kangaskhan_ogerpon.csv"
+    },
+    {
+      "id": "08_mega_starmie",
+      "name": "Mega Starmie ex / Ignition Energy",
+      "archetype": "mega_starmie",
+      "path": "decks/meta/08_mega_starmie.csv"
+    },
+    {
+      "id": "09_nighttime_mine_fezandipiti",
+      "name": "Nighttime Mine / Fezandipiti ex",
+      "archetype": "nighttime_mine_fezandipiti",
+      "path": "decks/meta/09_nighttime_mine_fezandipiti.csv"
+    },
+    {
+      "id": "10_mega_lucario",
+      "name": "Mega Lucario ex / Riolu",
+      "archetype": "mega_lucario",
+      "path": "decks/meta/10_mega_lucario.csv"
+    }
+  ]
+}
