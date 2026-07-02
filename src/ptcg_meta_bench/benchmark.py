@@ -39,7 +39,7 @@ class MetaDeck:
 
 
 def _timestamp() -> str:
-    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
 
 
 def _load_registry(path: Path = DECK_REGISTRY) -> list[MetaDeck]:
