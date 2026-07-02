@@ -5,17 +5,71 @@ on:
   pull_request:
 
 jobs:
-  smoke:
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
+  installer:
+    name: installer-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install package
+
+      - name: Download Kaggle SDK zip
+        shell: bash
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e ".[test]"
-      - name: Run smoke test
-        run: python -m pytest tests/test_smoke.py -q
+          if [ -z "$KAGGLE_USERNAME" ] || [ -z "$KAGGLE_KEY" ]; then
+            echo "KAGGLE_USERNAME and KAGGLE_KEY secrets are required for real engine CI." >&2
+            exit 1
+          fi
+          python -m pip install --upgrade kaggle
+          kaggle competitions download -c pokemon-tcg-ai-battle -p "$RUNNER_TEMP"
+          test -f "$RUNNER_TEMP/pokemon-tcg-ai-battle.zip"
+
+      - name: Linux installer
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          PTCG_REPO_URL: ${{ github.workspace }}
+          PTCG_REF: ${{ github.sha }}
+          PTCG_SDK_ZIP: ${{ runner.temp }}/pokemon-tcg-ai-battle.zip
+        run: ./install.sh
+
+      - name: Windows installer
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          PTCG_REPO_URL: ${{ github.workspace }}
+          PTCG_REF: ${{ github.sha }}
+          PTCG_SDK_ZIP: ${{ runner.temp }}\pokemon-tcg-ai-battle.zip
+        run: ./install.ps1
+
+      - name: Linux post-install checks
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          "$HOME/.local/share/ptcg-meta-bench/venv/bin/ptcg" doctor
+          "$HOME/.local/share/ptcg-meta-bench/venv/bin/ptcg" demo --games 2
+          cd "$HOME/.local/share/ptcg-meta-bench/source"
+          "$HOME/.local/share/ptcg-meta-bench/venv/bin/python" -m pytest -q
+          "$HOME/.local/share/ptcg-meta-bench/venv/bin/python" -m ptcg_meta_bench smoke
+
+      - name: Windows post-install checks
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $Root = Join-Path $env:LOCALAPPDATA "ptcg-meta-bench"
+          & (Join-Path $Root "venv\Scripts\ptcg.exe") doctor
+          & (Join-Path $Root "venv\Scripts\ptcg.exe") demo --games 2
+          Set-Location (Join-Path $Root "source")
+          & (Join-Path $Root "venv\Scripts\python.exe") -m pytest -q
+          & (Join-Path $Root "venv\Scripts\python.exe") -m ptcg_meta_bench smoke

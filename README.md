@@ -3,76 +3,147 @@
 [![CI](https://github.com/goldbar123467/ptcg-meta-bench/actions/workflows/ci.yml/badge.svg)](https://github.com/goldbar123467/ptcg-meta-bench/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Local meta-weighted benchmark harness for Pokemon TCG AI Battle agents.
+Friendly local benchmark tools for Pokemon TCG AI Battle agents. The `ptcg`
+command runs the official Kaggle engine locally, benchmarks an agent against a
+weighted 10-deck meta panel, and exposes the same workflow to AI agents through
+JSON and MCP.
 
-## What / Why
+## Get started in 60 seconds
 
-`ptcg-meta-bench` lets Kaggle Simulation competitors train and benchmark Pokemon TCG agents against a 10-deck meta panel, weighted by observed meta share. It wraps the official local engine after you provide your own Kaggle SDK download, runs full games, validates agent choices, and prints a compact matchup table.
+First download `pokemon-tcg-ai-battle.zip` from Kaggle and leave it in your
+Downloads folder. Then paste one block.
 
-This repo intentionally ships only a simple baseline player. It does not include tuned submission agents, private experiments, official SDK files, native engine libraries, raw Kaggle archives, or card images.
-
-## Quickstart
-
-Prerequisite: download `pokemon-tcg-ai-battle.zip` from the Kaggle competition page and place it at:
-
-```text
-data/competition/pokemon-tcg-ai-battle.zip
-```
-
-Install the package:
+Linux:
 
 ```bash
-python -m pip install -e .
+PTCG_SDK_ZIP="$HOME/Downloads/pokemon-tcg-ai-battle.zip" bash -c "$(curl -fsSL https://raw.githubusercontent.com/goldbar123467/ptcg-meta-bench/v1.1.0/install.sh)"
 ```
 
-Run the mini benchmark:
+Windows PowerShell:
+
+```powershell
+$env:PTCG_SDK_ZIP="$env:USERPROFILE\Downloads\pokemon-tcg-ai-battle.zip"; irm https://raw.githubusercontent.com/goldbar123467/ptcg-meta-bench/v1.1.0/install.ps1 | iex
+```
+
+The installer checks Python and git, creates an isolated virtual environment,
+installs `ptcg`, imports the Kaggle SDK zip, runs `ptcg doctor`, then runs
+`ptcg demo`.
+
+## What You Will See
+
+This is real `ptcg demo` output from this repo:
+
+![ptcg demo terminal screenshot](docs/terminal-demo.svg)
+
+```text
+Benchmarking meta decks ---------------------------------------- 10/10 0:00:21
+                             Meta Benchmark Results
++---------------------------+--------+-------+------+--------+--------+----------+
+| Deck                      | Weight | Games | Wins | Losses | Errors | Win Rate |
++---------------------------+--------+-------+------+--------+--------+----------+
+| 01_archaludon_duraludon   |   15.5 |     1 |    1 |      0 |      0 |    1.000 |
+| 02_petrel_froslass        |   14.6 |     1 |    1 |      0 |      0 |    1.000 |
+| 03_energy_recycler        |   11.5 |     1 |    0 |      1 |      0 |    0.000 |
+| 04_abra_alakazam          |    8.3 |     1 |    1 |      0 |      0 |    1.000 |
+| 05_yveltal_risky_ruins    |    7.2 |     1 |    1 |      0 |      0 |    1.000 |
+| 06_eri_wondrous_patch     |    5.9 |     1 |    0 |      1 |      0 |    0.000 |
+| 07_mega_kangaskhan_ogerpon|    5.1 |     1 |    1 |      0 |      0 |    1.000 |
+| 08_mega_starmie           |    5.0 |     1 |    1 |      0 |      0 |    1.000 |
+| 09_nighttime_mine_fezandip|    4.9 |     1 |    1 |      0 |      0 |    1.000 |
+| 10_mega_lucario           |    3.8 |     1 |    1 |      0 |      0 |    1.000 |
++---------------------------+--------+-------+------+--------+--------+----------+
+Your agent beats the meta 79% weighted.
+```
+
+There is no coding needed to try the benchmark. Put the Kaggle zip in place,
+install, and use the commands below.
+
+## Commands
 
 ```bash
-python -m ptcg_meta_bench quickstart --sdk-zip data/competition/pokemon-tcg-ai-battle.zip
+ptcg demo
+ptcg bench --games 20 --agent examples/agents/simple_baseline
+ptcg decks
+ptcg play --deck 01_archaludon_duraludon
+ptcg doctor
 ```
 
-The command extracts the official SDK into the ignored `.ptcg_engine/` cache, then runs one full game against each registered meta deck.
+Every command supports `--json` for terminal agents:
 
-## Sample Output
-
-This is the sample table from `examples/meta_results_sample.csv`:
-
-```text
-id	weight	games	agent_first	opp_first	completed	wins	losses	draws	errors	max_decisions	engine_errors	mean_decisions	win_rate
-01_archaludon_duraludon	15.5	1	1	0	1	1	0	0	0	0	0	160.0	1.000
-02_petrel_froslass	14.6	1	1	0	1	1	0	0	0	0	0	149.0	1.000
-03_energy_recycler	11.5	1	1	0	1	1	0	0	0	0	0	72.0	1.000
-04_abra_alakazam	8.3	1	1	0	1	1	0	0	0	0	0	83.0	1.000
-05_yveltal_risky_ruins	7.2	1	1	0	1	0	1	0	0	0	0	162.0	0.000
-06_eri_wondrous_patch	5.9	1	1	0	1	1	0	0	0	0	0	160.0	1.000
-07_mega_kangaskhan_ogerpon	5.1	1	1	0	1	1	0	0	0	0	0	127.0	1.000
-08_mega_starmie	5.0	1	1	0	1	1	0	0	0	0	0	55.0	1.000
-09_nighttime_mine_fezandipiti	4.9	1	1	0	1	1	0	0	0	0	0	125.0	1.000
-10_mega_lucario	3.8	1	1	0	1	1	0	0	0	0	0	173.0	1.000
-META_WEIGHTED_OVERALL	weight_sum=81.8	win_rate=0.912
+```bash
+ptcg demo --games 2 --json
+ptcg decks --json
+ptcg doctor --json
 ```
 
-The sample is a tiny smoke-scale run with the simple baseline and fixed first-player choice. Use larger match counts before making strength claims.
+The v1.0.0 command names still work:
 
-## Architecture
-
-```text
-user agent dir
-  main.py / deck.csv / metadata.json
-        |
-        v
-agent contract validator
-        |
-        v
-official Kaggle SDK wrapper  <--- user-supplied zip or PTCG_ENGINE_DIR
-        |
-        v
-match runner -> deck registry -> meta-weighted benchmark -> results table
+```bash
+ptcg-meta-bench quickstart --sdk-zip data/competition/pokemon-tcg-ai-battle.zip
+python -m ptcg_meta_bench list-decks
 ```
 
-## Plug In Your Own Agent
+## Troubleshooting
 
-Create a directory with:
+`ptcg doctor` says the SDK is missing:
+
+Put `pokemon-tcg-ai-battle.zip` at `data/competition/pokemon-tcg-ai-battle.zip`
+inside the installed source checkout, or rerun the installer with
+`PTCG_SDK_ZIP` pointing at the zip.
+
+`python3` is missing on Linux:
+
+Install Python 3.10 or newer with your system package manager, then rerun the
+Linux one-paste command.
+
+`git` is missing:
+
+Install git, then rerun the one-paste command. The installer uses git so it can
+update the existing isolated checkout idempotently.
+
+`ptcg bench --games 0 --json` returns:
+
+```json
+{
+  "message": "--games must be at least 1",
+  "status": "error"
+}
+```
+
+That is a normal friendly user error, not a traceback.
+
+## Agent And MCP Use
+
+Use CLI plus `--json` for terminal agents such as Codex:
+
+```bash
+ptcg decks --json
+ptcg demo --games 2 --json
+ptcg bench --games 20 --agent examples/agents/simple_baseline --json
+```
+
+Use MCP for MCP clients such as Claude Desktop:
+
+```json
+{
+  "mcpServers": {
+    "ptcg-meta-bench": {
+      "command": "ptcg",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+The MCP server exposes `list_decks`, `run_benchmark`, `play_game`, and
+`get_last_results`.
+
+## Technical Notes
+
+The repo does not vendor the Kaggle SDK zip, native engine libraries, card
+images, or private submissions. You provide your own Kaggle competition zip.
+
+The local agent layout is:
 
 ```text
 my_agent/
@@ -81,52 +152,11 @@ my_agent/
   metadata.json
 ```
 
-Minimal `main.py` interface:
+`deck.csv` must contain exactly 60 integer card IDs. The local runner validates
+candidate imports, initial deck returns, selection bounds, engine errors, and
+max-decision stalls.
 
-```python
-from cg.api import to_observation_class
-
-
-def _read_deck() -> list[int]:
-    with open("deck.csv", encoding="utf-8") as handle:
-        return [int(line.strip()) for line in handle if line.strip()]
-
-
-def agent(obs_dict):
-    obs = to_observation_class(obs_dict)
-    if obs.select is None:
-        return _read_deck()
-    return list(range(obs.select.minCount))
-```
-
-Pass your directory through the `--agent` option when benchmarking.
-
-## Add Your Own Deck
-
-Deck CSVs are one integer card ID per line, exactly 60 rows. To extend the panel:
-
-1. Add a CSV under `decks/meta/`.
-2. Add a matching entry to `decks/meta/registry.json`.
-3. Assign a weight in `src/ptcg_meta_bench/benchmark.py`.
-4. Re-run the quickstart benchmark and check `errors`, `engine_errors`, and `max_decisions`.
-
-## 10-Deck Meta Panel
-
-| ID | Archetype | Weight |
-| --- | --- | ---: |
-| `01_archaludon_duraludon` | Archaludon ex / Duraludon | 15.5 |
-| `02_petrel_froslass` | Team Rocket's Petrel / Froslass | 14.6 |
-| `03_energy_recycler` | Energy Recycler / Energy Search | 11.5 |
-| `04_abra_alakazam` | Abra / Alakazam | 8.3 |
-| `05_yveltal_risky_ruins` | Yveltal / Risky Ruins | 7.2 |
-| `06_eri_wondrous_patch` | Eri / Wondrous Patch | 5.9 |
-| `07_mega_kangaskhan_ogerpon` | Mega Kangaskhan ex / Wellspring Mask Ogerpon ex | 5.1 |
-| `08_mega_starmie` | Mega Starmie ex / Ignition Energy | 5.0 |
-| `09_nighttime_mine_fezandipiti` | Nighttime Mine / Fezandipiti ex | 4.9 |
-| `10_mega_lucario` | Mega Lucario ex / Riolu | 3.8 |
-
-## Notes
-
-The official Python wrapper does not expose a public seed setter for the native engine. The smoke path forces the first-player prompt where the wrapper allows it, but native shuffling remains engine-controlled.
-
-This is an unofficial fan project for the Kaggle Pokemon TCG AI Battle competition. It is not affiliated with, endorsed by, sponsored by, or approved by Pokemon, Nintendo, Creatures, Game Freak, or Kaggle. No card images are included.
+This is an unofficial fan project for the Kaggle Pokemon TCG AI Battle
+competition. It is not affiliated with, endorsed by, sponsored by, or approved
+by Pokemon, Nintendo, Creatures, Game Freak, or Kaggle. No card images are
+included.
