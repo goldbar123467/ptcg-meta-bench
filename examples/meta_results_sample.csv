@@ -1,0 +1,11 @@
+id,weight,games,agent_first,opponent_first,completed,wins,losses,draws,errors,max_decisions,engine_errors,mean_decisions,win_rate
+01_archaludon_duraludon,15.5,1,1,0,1,1,0,0,0,0,0,160.0,1.0
+02_petrel_froslass,14.6,1,1,0,1,1,0,0,0,0,0,149.0,1.0
+03_energy_recycler,11.5,1,1,0,1,1,0,0,0,0,0,72.0,1.0
+04_abra_alakazam,8.3,1,1,0,1,1,0,0,0,0,0,83.0,1.0
+05_yveltal_risky_ruins,7.2,1,1,0,1,0,1,0,0,0,0,162.0,0.0
+06_eri_wondrous_patch,5.9,1,1,0,1,1,0,0,0,0,0,160.0,1.0
+07_mega_kangaskhan_ogerpon,5.1,1,1,0,1,1,0,0,0,0,0,127.0,1.0
+08_mega_starmie,5.0,1,1,0,1,1,0,0,0,0,0,55.0,1.0
+09_nighttime_mine_fezandipiti,4.9,1,1,0,1,1,0,0,0,0,0,125.0,1.0
+10_mega_lucario,3.8,1,1,0,1,1,0,0,0,0,0,173.0,1.0

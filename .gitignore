@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+.env
+.env.*
+kaggle.json
+.kaggle/
+
+# Local SDK/cache material. Users download the Kaggle SDK themselves.
+data/competition/*.zip
+.ptcg_engine/
+
+# Generated benchmark output.
+runs/
+*.egg-info/
+dist/
+build/
